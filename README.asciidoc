@@ -14,7 +14,7 @@ endif::[]
 
 
 `react-konva-portal` provides https://reactjs.org/docs/portals.html[portals] support for `react-konva` canvas
-component tree.If you want to have some `KonvaNode` rendered outside your component hierarchy you can use `Stage` and
+component tree. If you want to have some `KonvaNode` rendered outside your component hierarchy you can use `Stage` and
 `Portal` components exposed by this library. Please see https://github.com/papahigh/react-konva-portal/tree/master/example[example] project.
 
 
@@ -28,13 +28,13 @@ image::https://i.imgur.com/XKOPPBN.gif[420,420]
 yarn add react-konva-portal
 ----
 
-Please note that this package depends on `react`, `konva` and `react-konva` packages.
+IMPORTANT: Please note that this package also depends on `react`, `konva` and `react-konva` packages.
 
 == Usage
 
-You should define your stage using `Stage` component from 'react-konva-portal' it supports all original props. In order
+You should define your stage using `Stage` component from `react-konva-portal` it supports all original props. In order
 to make `KonvaNode` component rendered outside your current react tree wrap it with a `Portal` component from
-'react-konva-portal'.
+`react-konva-portal`.
 
 
 [source,javascript]

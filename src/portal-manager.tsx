@@ -55,3 +55,5 @@ function PortalManagerComponent(
 }
 
 export const PortalManager = forwardRef<PortalManagerRef, PortalManagerProps>(PortalManagerComponent);
+
+export default PortalManager;

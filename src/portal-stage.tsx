@@ -1,3 +1,4 @@
+import Konva from 'konva';
 import React, {
   createContext,
   PropsWithChildren,
@@ -10,7 +11,9 @@ import React, {
 import { Layer, Stage, StageProps } from 'react-konva';
 import { PortalManager, PortalManagerRef } from './portal-manager';
 
-export interface PortalStageProps extends StageProps {}
+export interface PortalStageProps extends StageProps {
+  portalLayerProps?: Partial<Konva.LayerConfig>;
+}
 
 export interface PortalStageContextValue {
   mount: (children: ReactNode, zIndex: number) => number;
@@ -36,7 +39,7 @@ function PortalStageContextProvider({ mount, unmount, update, children }: PropsW
   return <PortalStageContext.Provider value={contextValue}>{children}</PortalStageContext.Provider>;
 }
 
-export function PortalStage({ children, ...stageProps }: PortalStageProps) {
+export function PortalStage({ children, portalLayerProps, ...stageProps }: PortalStageProps) {
   const seqRef = useRef(0);
   const queueRef = useRef<BufferedAction[]>([]);
   const managerRef = useRef<PortalManagerRef | null>(null);
@@ -54,7 +57,7 @@ export function PortalStage({ children, ...stageProps }: PortalStageProps) {
       },
     };
 
-    while (queueRef.current.length && managerRef.current) {
+    while (queueRef.current.length) {
       const action = queueRef.current.pop();
       if (action) handlers[action.type].call(null, action);
     }
@@ -85,10 +88,12 @@ export function PortalStage({ children, ...stageProps }: PortalStageProps) {
     <Stage {...stageProps}>
       <PortalStageContextProvider mount={mount} update={update} unmount={unmount}>
         {children}
-        <Layer>
+        <Layer {...portalLayerProps}>
           <PortalManager ref={managerRef} />
         </Layer>
       </PortalStageContextProvider>
     </Stage>
   );
 }
+
+export default PortalStage;

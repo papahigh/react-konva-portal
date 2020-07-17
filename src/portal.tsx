@@ -72,3 +72,5 @@ export function Portal({ children, zIndex = DEFAULT_Z_INDEX }: PortalProps) {
 
   return (null as ReactNode) as ReactElement;
 }
+
+export default Portal;

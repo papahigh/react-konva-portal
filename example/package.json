@@ -1,6 +1,6 @@
 {
   "name": "react-konva-portal-example",
-  "homepage": "https://github.com/papahigh/react-konva-portal",
+  "homepage": ".",
   "version": "1.0.0",
   "private": true,
   "scripts": {
