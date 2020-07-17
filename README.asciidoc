@@ -13,13 +13,13 @@ endif::[]
 > Portal API support for react-konva
 
 
-`react-konva-portal` provides https://reactjs.org/docs/portals.html[portals] support for `react-konva` canvas
-component tree. If you want to have some `KonvaNode` rendered outside your component hierarchy you can use `Stage` and
-`Portal` components exposed by this library. Please see https://github.com/papahigh/react-konva-portal/tree/master/example[example] project.
-
+`react-konva-portal` brings https://reactjs.org/docs/portals.html[portals] support for `react-konva`
+components and allows mounting canvas content into different locations of the `Stage` regardless of a particular component hierarchy.
 
 .link:https://i.imgur.com/XKOPPBN.gif[demo.gif]
 image::https://i.imgur.com/XKOPPBN.gif[420,420]
+
+Please see https://github.com/papahigh/react-konva-portal/tree/master/example[example project] .
 
 == Install
 
@@ -28,14 +28,14 @@ image::https://i.imgur.com/XKOPPBN.gif[420,420]
 yarn add react-konva-portal
 ----
 
-IMPORTANT: Please note that this package also depends on `konva` and `react-konva` packages.
+IMPORTANT: Please note, this package depends on `konva` and `react-konva` packages.
 
 == Usage
 
-You should define your stage using `Stage` component from `react-konva-portal` it supports all original props. In order
-to make `KonvaNode` component rendered outside your current react tree wrap it with a `Portal` component from
-`react-konva-portal`.
+First of all, you should define your `Konva.Stage` using `Stage` component from `react-konva-portal`.
+Please, use it as a drop-in replacement of the original one. It is required in order for portals to work.
 
+Any content placed in a `<Portal/>` will be rendered outside of its tree hierarchy in a special layer of a `Stage`.
 
 [source,javascript]
 ----
@@ -60,6 +60,23 @@ class ExampleStage extends Component {
   }
 }
 ----
+
+== API
+
+=== Stage Props
+Interface StageProps inherits original StageProps from `react-konva` and extends it with the following props:
+
+portalLayerProps::
+Optional. Accepts `Konva.LayerConfig` and brings it straight to portals containing `Layer` instance from `react-konva`.
+
+=== Portal Props
+children::
+Required. This content This property stands for `ReactNode` and is aimed for teleporting.
+zIndex::
+Optional. Specifies the stack order of a `Portal` instance within a particular `Stage`.
+
+== Contribute
+Use the https://github.com/papahigh/react-konva-portal/issues[issue tracker] and/or open https://github.com/papahigh/react-konva-portal/pulls[pull requests].
 
 == License
 
