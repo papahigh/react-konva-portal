@@ -70,7 +70,7 @@ function PortalManagerComponent(
 
       function applyUpdate() {
         lastFrameId = undefined;
-        forceRender();
+        if (!unmountedRef.current) forceRender();
       }
 
       function scheduleUpdate() {
