@@ -9,10 +9,11 @@ import React, {
   useRef,
 } from 'react';
 import { Layer, Stage, StageProps } from 'react-konva';
-import { PortalManager, PortalManagerRef } from './portal-manager';
+import { DEFAULT_UPDATE_STRATEGY, PortalManager, PortalManagerRef, UpdateStrategy } from './portal-manager';
 
 export interface PortalStageProps extends StageProps {
   portalLayerProps?: Partial<Konva.LayerConfig>;
+  portalUpdateStrategy?: UpdateStrategy;
 }
 
 export interface PortalStageContextValue {
@@ -39,7 +40,12 @@ function PortalStageContextProvider({ mount, unmount, update, children }: PropsW
   return <PortalStageContext.Provider value={contextValue}>{children}</PortalStageContext.Provider>;
 }
 
-export function PortalStage({ children, portalLayerProps, ...stageProps }: PortalStageProps) {
+export function PortalStage({
+  portalUpdateStrategy = DEFAULT_UPDATE_STRATEGY,
+  portalLayerProps,
+  children,
+  ...stageProps
+}: PortalStageProps) {
   const seqRef = useRef(0);
   const queueRef = useRef<BufferedAction[]>([]);
   const managerRef = useRef<PortalManagerRef | null>(null);
@@ -89,7 +95,7 @@ export function PortalStage({ children, portalLayerProps, ...stageProps }: Porta
       <PortalStageContextProvider mount={mount} update={update} unmount={unmount}>
         {children}
         <Layer {...portalLayerProps}>
-          <PortalManager ref={managerRef} />
+          <PortalManager ref={managerRef} updateStrategy={portalUpdateStrategy} />
         </Layer>
       </PortalStageContextProvider>
     </Stage>

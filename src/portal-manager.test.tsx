@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react';
 import React from 'react';
-import { PortalManager, PortalNode, zIndexComparator } from './portal-manager';
+import { PortalManager, PortalNode, UpdateStrategy, zIndexComparator } from './portal-manager';
 
 describe('portal-manager.tsx', () => {
   it('should match snapshot', () => {
-    const { asFragment } = render(<PortalManager />);
+    const { asFragment } = render(<PortalManager updateStrategy={UpdateStrategy.SCHEDULED} />);
     expect(asFragment()).toMatchSnapshot();
   });
 

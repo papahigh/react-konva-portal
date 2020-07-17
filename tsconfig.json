@@ -6,7 +6,6 @@
     "lib": ["dom", "esnext"],
     "moduleResolution": "node",
     "jsx": "react",
-    "sourceMap": true,
     "declaration": true,
     "importHelpers": true,
     "esModuleInterop": true,
@@ -22,8 +21,11 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "isolatedModules": false
+    "allowJs": true,
+    "isolatedModules": true,
+    "noEmit": true
   },
   "files": ["src/index.tsx"],
-  "exclude": ["node_modules", "dist", "example"]
+  "exclude": ["node_modules", "dist", "example"],
+  "include": ["src"]
 }

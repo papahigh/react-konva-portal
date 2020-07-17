@@ -1,6 +1,24 @@
-import React, { forwardRef, MutableRefObject, ReactElement, ReactNode, useImperativeHandle, useState } from 'react';
+import React, {
+  forwardRef,
+  MutableRefObject,
+  ReactElement,
+  ReactNode,
+  useEffect,
+  useImperativeHandle,
+  useReducer,
+  useRef,
+} from 'react';
 
-export interface PortalManagerProps {}
+export interface PortalManagerProps {
+  updateStrategy: UpdateStrategy;
+}
+
+export enum UpdateStrategy {
+  INSTANT,
+  SCHEDULED,
+}
+
+export const DEFAULT_UPDATE_STRATEGY = UpdateStrategy.INSTANT;
 
 export interface PortalManagerRef {
   mount(key: number, children: ReactNode, zIndex: number): void;
@@ -23,33 +41,84 @@ export function zIndexComparator(a: PortalNode, b: PortalNode) {
   return zIndexA > zIndexB ? 1 : -1;
 }
 
+export type ForceRenderFunction = () => void;
+
+export function useForceRender(): ForceRenderFunction {
+  const [, forceRender] = useReducer(i => i + 1, 0);
+  return forceRender;
+}
+
 function PortalManagerComponent(
-  _: PortalManagerProps,
+  { updateStrategy }: PortalManagerProps,
   ref: ((instance: PortalManagerRef | null) => void) | MutableRefObject<PortalManagerRef | null> | null,
 ) {
-  const [portals, setPortals] = useState<PortalNode[]>([]);
+  const portalsRef = useRef<PortalNode[]>([]);
+  const unmountedRef = useRef(false);
+  const forceRender = useForceRender();
+
+  useEffect(
+    () => () => {
+      unmountedRef.current = true;
+    },
+    [],
+  );
 
   useImperativeHandle<PortalManagerRef, PortalManagerRef>(
     ref,
-    () => ({
-      mount: (key, children, zIndex) =>
-        setPortals(currValue => [...currValue, { key, children, zIndex }].sort(zIndexComparator)),
-      update: (key, children, zIndex) =>
-        setPortals(prevValue => {
+    () => {
+      let lastFrameId: number | undefined;
+
+      function applyUpdate() {
+        lastFrameId = undefined;
+        forceRender();
+      }
+
+      function scheduleUpdate() {
+        if (lastFrameId != null) cancelAnimationFrame(lastFrameId);
+        lastFrameId = requestAnimationFrame(applyUpdate);
+      }
+
+      function updateComponent() {
+        if (!unmountedRef.current) {
+          switch (updateStrategy) {
+            case UpdateStrategy.INSTANT:
+              applyUpdate();
+              break;
+            case UpdateStrategy.SCHEDULED:
+              scheduleUpdate();
+              break;
+            default:
+              break;
+          }
+        }
+      }
+
+      return {
+        mount: (key, children, zIndex) => {
+          portalsRef.current.push({ key, children, zIndex });
+          portalsRef.current = portalsRef.current.sort(zIndexComparator);
+          updateComponent();
+        },
+        update: (key, children, zIndex) => {
           let zIndexChanged = false;
-          const currValue = prevValue.map(item => {
+          const newValue = portalsRef.current.map(item => {
             if (item.key !== key) return item;
             zIndexChanged = item.zIndex !== zIndex;
             return { key, children, zIndex };
           });
-          return zIndexChanged ? currValue.sort(zIndexComparator) : currValue;
-        }),
-      unmount: (key: number) => setPortals(prevValue => prevValue.filter(item => item.key !== key)),
-    }),
-    [setPortals],
+          portalsRef.current = zIndexChanged ? newValue.sort(zIndexComparator) : newValue;
+          updateComponent();
+        },
+        unmount: (key: number) => {
+          portalsRef.current = portalsRef.current.filter(item => item.key !== key);
+          updateComponent();
+        },
+      };
+    },
+    [forceRender, updateStrategy],
   );
 
-  return (portals.map(({ key, children }) => (
+  return (portalsRef.current.map(({ key, children }) => (
     <React.Fragment key={key}>{children}</React.Fragment>
   )) as ReactNode) as ReactElement;
 }
