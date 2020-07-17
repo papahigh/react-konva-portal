@@ -1,3 +1,4 @@
+import debounce from 'lodash/debounce';
 import React, {
   forwardRef,
   MutableRefObject,
@@ -10,12 +11,21 @@ import React, {
 } from 'react';
 
 export interface PortalManagerProps {
+  debounceArgs?: DebounceArgs;
   updateStrategy: UpdateStrategy;
+}
+
+export interface DebounceArgs {
+  wait: number;
+  leading: boolean;
+  maxWait?: number;
+  trailing: boolean;
 }
 
 export enum UpdateStrategy {
   INSTANT,
   SCHEDULED,
+  DEBOUNCED,
 }
 
 export const DEFAULT_UPDATE_STRATEGY = UpdateStrategy.INSTANT;
@@ -33,6 +43,7 @@ export interface PortalNode {
 }
 
 export const DEFAULT_Z_INDEX = 0;
+export const DEFAULT_DEBOUNCE = { wait: 0, leading: false, maxWait: undefined, trailing: true };
 
 export function zIndexComparator(a: PortalNode, b: PortalNode) {
   const { zIndex: zIndexA = DEFAULT_Z_INDEX } = a;
@@ -49,7 +60,7 @@ export function useForceRender(): ForceRenderFunction {
 }
 
 function PortalManagerComponent(
-  { updateStrategy }: PortalManagerProps,
+  { debounceArgs, updateStrategy }: PortalManagerProps,
   ref: ((instance: PortalManagerRef | null) => void) | MutableRefObject<PortalManagerRef | null> | null,
 ) {
   const portalsRef = useRef<PortalNode[]>([]);
@@ -78,6 +89,13 @@ function PortalManagerComponent(
         lastFrameId = requestAnimationFrame(applyUpdate);
       }
 
+      const allArgs = { ...DEFAULT_DEBOUNCE, ...debounceArgs };
+      const debounceUpdate = debounce(applyUpdate, allArgs?.wait, {
+        leading: allArgs?.leading,
+        maxWait: allArgs?.maxWait,
+        trailing: allArgs?.trailing,
+      });
+
       function updateComponent() {
         if (!unmountedRef.current) {
           switch (updateStrategy) {
@@ -86,6 +104,9 @@ function PortalManagerComponent(
               break;
             case UpdateStrategy.SCHEDULED:
               scheduleUpdate();
+              break;
+            case UpdateStrategy.DEBOUNCED:
+              debounceUpdate();
               break;
             default:
               break;
@@ -109,13 +130,13 @@ function PortalManagerComponent(
           portalsRef.current = zIndexChanged ? newValue.sort(zIndexComparator) : newValue;
           updateComponent();
         },
-        unmount: (key: number) => {
+        unmount: key => {
           portalsRef.current = portalsRef.current.filter(item => item.key !== key);
           updateComponent();
         },
       };
     },
-    [forceRender, updateStrategy],
+    [forceRender, updateStrategy, debounceArgs],
   );
 
   return (portalsRef.current.map(({ key, children }) => (

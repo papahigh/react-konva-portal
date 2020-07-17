@@ -28,7 +28,7 @@ image::https://i.imgur.com/XKOPPBN.gif[420,420]
 yarn add react-konva-portal
 ----
 
-IMPORTANT: Please note that this package also depends on `react`, `konva` and `react-konva` packages.
+IMPORTANT: Please note that this package also depends on `konva` and `react-konva` packages.
 
 == Usage
 

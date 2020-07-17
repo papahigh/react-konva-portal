@@ -52,8 +52,8 @@ export function PortalStage({
 
   useLayoutEffect(() => {
     const handlers = {
-      mount: (o: BufferedAction) => {
-        if (o.type === 'mount') managerRef.current?.mount(o.key, o.children, o.zIndex);
+      mount: (op: BufferedAction) => {
+        if (op.type === 'mount') managerRef.current?.mount(op.key, op.children, op.zIndex);
       },
       update: (op: BufferedAction) => {
         if (op.type === 'update') managerRef.current?.update(op.key, op.children, op.zIndex);
