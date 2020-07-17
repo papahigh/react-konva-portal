@@ -1,10 +1,4 @@
-import * as React from 'react'
-import styles from './styles.module.css'
-
-interface Props {
-  text: string
-}
-
-export const ExampleComponent = ({ text }: Props) => {
-  return <div className={styles.test}>Example Component: {text}</div>
-}
+export { Portal } from './portal';
+export { PortalStage as Stage } from './portal-stage';
+export type { PortalProps } from './portal';
+export type { PortalStageProps as StageProps } from './portal-stage';
