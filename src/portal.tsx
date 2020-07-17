@@ -7,7 +7,7 @@ export interface PortalProps {
   zIndex?: number;
 }
 
-enum PortalPhase {
+enum LifecyclePhase {
   INITIAL,
   WILL_MOUNT,
   DID_MOUNT,
@@ -34,7 +34,7 @@ export function assertPortalManager(val: any): val is PortalStageContextValue {
 
 export function Portal({ children, zIndex = DEFAULT_Z_INDEX }: PortalProps) {
   const keyRef = useRef(-1);
-  const phaseRef = useRef<PortalPhase>(PortalPhase.INITIAL);
+  const phaseRef = useRef<LifecyclePhase>(LifecyclePhase.INITIAL);
   const stagePortals = useContext(PortalStageContext);
 
   useLayoutEffect(() => {
@@ -43,7 +43,7 @@ export function Portal({ children, zIndex = DEFAULT_Z_INDEX }: PortalProps) {
 
   useLayoutEffect(
     () => () => {
-      phaseRef.current = PortalPhase.WILL_UNMOUNT;
+      phaseRef.current = LifecyclePhase.WILL_UNMOUNT;
     },
     [],
   );
@@ -54,17 +54,17 @@ export function Portal({ children, zIndex = DEFAULT_Z_INDEX }: PortalProps) {
   }, []);
 
   useLayoutEffect(() => {
-    if (phaseRef.current === PortalPhase.INITIAL) {
-      phaseRef.current = PortalPhase.WILL_MOUNT;
+    if (phaseRef.current === LifecyclePhase.INITIAL) {
+      phaseRef.current = LifecyclePhase.WILL_MOUNT;
       mountAsync().then(() => {
-        phaseRef.current = PortalPhase.DID_MOUNT;
+        phaseRef.current = LifecyclePhase.DID_MOUNT;
       });
     }
-    if (phaseRef.current === PortalPhase.DID_MOUNT) {
+    if (phaseRef.current === LifecyclePhase.DID_MOUNT) {
       stagePortals?.update(keyRef.current, children, zIndex);
     }
     return () => {
-      if (phaseRef.current === PortalPhase.WILL_UNMOUNT) {
+      if (phaseRef.current === LifecyclePhase.WILL_UNMOUNT) {
         stagePortals?.unmount(keyRef.current);
       }
     };

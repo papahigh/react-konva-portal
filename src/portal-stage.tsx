@@ -9,9 +9,10 @@ import React, {
   useRef,
 } from 'react';
 import { Layer, Stage, StageProps } from 'react-konva';
-import { DEFAULT_UPDATE_STRATEGY, PortalManager, PortalManagerRef, UpdateStrategy } from './portal-manager';
+import { DebounceArgs, DEFAULT_STRATEGY, PortalManager, PortalManagerRef, UpdateStrategy } from './portal-manager';
 
 export interface PortalStageProps extends StageProps {
+  portalDebounceArgs?: DebounceArgs;
   portalLayerProps?: Partial<Konva.LayerConfig>;
   portalUpdateStrategy?: UpdateStrategy;
 }
@@ -41,7 +42,8 @@ function PortalStageContextProvider({ mount, unmount, update, children }: PropsW
 }
 
 export function PortalStage({
-  portalUpdateStrategy = DEFAULT_UPDATE_STRATEGY,
+  portalUpdateStrategy = DEFAULT_STRATEGY,
+  portalDebounceArgs,
   portalLayerProps,
   children,
   ...stageProps
@@ -95,7 +97,7 @@ export function PortalStage({
       <PortalStageContextProvider mount={mount} update={update} unmount={unmount}>
         {children}
         <Layer {...portalLayerProps}>
-          <PortalManager ref={managerRef} updateStrategy={portalUpdateStrategy} />
+          <PortalManager ref={managerRef} updateStrategy={portalUpdateStrategy} debounceArgs={portalDebounceArgs} />
         </Layer>
       </PortalStageContextProvider>
     </Stage>

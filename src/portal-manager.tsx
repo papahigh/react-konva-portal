@@ -28,8 +28,6 @@ export enum UpdateStrategy {
   DEBOUNCED,
 }
 
-export const DEFAULT_UPDATE_STRATEGY = UpdateStrategy.INSTANT;
-
 export interface PortalManagerRef {
   mount(key: number, children: ReactNode, zIndex: number): void;
   update(key: number, children: ReactNode, zIndex: number): void;
@@ -43,7 +41,8 @@ export interface PortalNode {
 }
 
 export const DEFAULT_Z_INDEX = 0;
-export const DEFAULT_DEBOUNCE = { wait: 0, leading: false, maxWait: undefined, trailing: true };
+export const DEFAULT_DEBOUNCE = { wait: 24, leading: false, maxWait: undefined, trailing: true };
+export const DEFAULT_STRATEGY = UpdateStrategy.INSTANT;
 
 export function zIndexComparator(a: PortalNode, b: PortalNode) {
   const { zIndex: zIndexA = DEFAULT_Z_INDEX } = a;
@@ -59,17 +58,34 @@ export function useForceRender(): ForceRenderFunction {
   return forceRender;
 }
 
+enum LifecyclePhase {
+  WILL_MOUNT,
+  DID_MOUNT,
+  WILL_UNMOUNT,
+}
+
+function nextStrategy(curr: UpdateStrategy, phase: LifecyclePhase) {
+  switch (phase) {
+    case LifecyclePhase.WILL_MOUNT:
+    case LifecyclePhase.WILL_UNMOUNT:
+      return UpdateStrategy.DEBOUNCED;
+    case LifecyclePhase.DID_MOUNT:
+    default:
+      return curr;
+  }
+}
+
 function PortalManagerComponent(
   { debounceArgs, updateStrategy }: PortalManagerProps,
   ref: ((instance: PortalManagerRef | null) => void) | MutableRefObject<PortalManagerRef | null> | null,
 ) {
+  const phaseRef = useRef<LifecyclePhase>(LifecyclePhase.WILL_MOUNT);
   const portalsRef = useRef<PortalNode[]>([]);
-  const unmountedRef = useRef(false);
   const forceRender = useForceRender();
 
   useEffect(
     () => () => {
-      unmountedRef.current = true;
+      phaseRef.current = LifecyclePhase.WILL_UNMOUNT;
     },
     [],
   );
@@ -81,7 +97,7 @@ function PortalManagerComponent(
 
       function applyUpdate() {
         lastFrameId = undefined;
-        if (!unmountedRef.current) forceRender();
+        if (phaseRef.current !== LifecyclePhase.WILL_UNMOUNT) forceRender();
       }
 
       function scheduleUpdate() {
@@ -90,27 +106,21 @@ function PortalManagerComponent(
       }
 
       const allArgs = { ...DEFAULT_DEBOUNCE, ...debounceArgs };
-      const debounceUpdate = debounce(applyUpdate, allArgs?.wait, {
-        leading: allArgs?.leading,
-        maxWait: allArgs?.maxWait,
-        trailing: allArgs?.trailing,
-      });
+      const debounceUpdate = debounce(applyUpdate, allArgs?.wait, allArgs);
 
       function updateComponent() {
-        if (!unmountedRef.current) {
-          switch (updateStrategy) {
-            case UpdateStrategy.INSTANT:
-              applyUpdate();
-              break;
-            case UpdateStrategy.SCHEDULED:
-              scheduleUpdate();
-              break;
-            case UpdateStrategy.DEBOUNCED:
-              debounceUpdate();
-              break;
-            default:
-              break;
-          }
+        switch (nextStrategy(updateStrategy, phaseRef.current)) {
+          case UpdateStrategy.INSTANT:
+            applyUpdate();
+            break;
+          case UpdateStrategy.SCHEDULED:
+            scheduleUpdate();
+            break;
+          case UpdateStrategy.DEBOUNCED:
+            debounceUpdate();
+            break;
+          default:
+            break;
         }
       }
 
@@ -138,6 +148,10 @@ function PortalManagerComponent(
     },
     [forceRender, updateStrategy, debounceArgs],
   );
+
+  useEffect(() => {
+    phaseRef.current = LifecyclePhase.DID_MOUNT;
+  }, []);
 
   return (portalsRef.current.map(({ key, children }) => (
     <React.Fragment key={key}>{children}</React.Fragment>
