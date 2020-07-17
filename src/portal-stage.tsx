@@ -1,4 +1,12 @@
-import React, { createContext, PropsWithChildren, ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
+import React, {
+  createContext,
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { Layer, Stage, StageProps } from 'react-konva';
 import { PortalManager, PortalManagerRef } from './portal-manager';
 
@@ -33,7 +41,7 @@ export function PortalStage({ children, ...stageProps }: PortalStageProps) {
   const queueRef = useRef<BufferedAction[]>([]);
   const managerRef = useRef<PortalManagerRef | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const handlers = {
       mount: (o: BufferedAction) => {
         if (o.type === 'mount') managerRef.current?.mount(o.key, o.children, o.zIndex);

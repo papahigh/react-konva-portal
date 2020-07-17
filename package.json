@@ -7,6 +7,7 @@
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "repository": "papahigh/react-konva-portal",
+  "homepage": "https://github.com/papahigh/react-konva-portal",
   "source": "src/index.tsx",
   "engines": {
     "node": ">=10"

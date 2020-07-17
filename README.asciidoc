@@ -1,0 +1,66 @@
+= react-konva-portal
+Nikolay Papakha
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :paperclip:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+ifndef::env-github[]
+endif::[]
+
+> Portal API support for react-konva
+
+
+`react-konva-portal` provides https://reactjs.org/docs/portals.html[portals] support for `react-konva` canvas
+component tree.If you want to have some `KonvaNode` rendered outside your component hierarchy you can use `Stage` and
+`Portal` components exposed by this library. Please see https://github.com/papahigh/react-konva-portal/tree/master/example[example] project.
+
+
+.link:https://i.imgur.com/XKOPPBN.gif[demo.gif]
+image::https://i.imgur.com/XKOPPBN.gif[420,420]
+
+== Install
+
+[source,bash]
+----
+yarn add react-konva-portal
+----
+
+Please note that this package depends on `react`, `konva` and `konva-konva` packages.
+
+== Usage
+
+You should define your stage using `Stage` component from 'react-konva-portal' it supports all original props. In order
+to make `KonvaNode` component rendered outside your current react tree wrap it with a `Portal` component from
+'react-konva-portal'.
+
+
+[source,javascript]
+----
+import React, { Component } from 'react';
+import { Rect, Text, Layer } from 'react-konva';
+import { Stage, Portal } from 'react-konva-portal';
+
+class ExampleStage extends Component {
+  render() {
+    return (
+      <Stage width={400} height={400}>
+        <Layer name="example-layer">
+          <Portal>
+            <Text text="This content will be rendered in a Portal (above overlay-layer)." width={400} height={400} />
+          </Portal>
+        </Layer>
+        <Layer name="overlay-layer">
+          <Rect fill="#c1f7ff" width={400} height={400} />
+        </Layer>
+      </Stage>
+    );
+  }
+}
+----
+
+== License
+
+MIT © https://github.com/papahigh[papahigh]

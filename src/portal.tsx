@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useCallback, useContext, useEffect, useRef } from 'react';
+import { ReactElement, ReactNode, useCallback, useContext, useLayoutEffect, useRef } from 'react';
 import { DEFAULT_Z_INDEX } from './portal-manager';
 import { PortalStageContext, PortalStageContextValue } from './portal-stage';
 
@@ -37,11 +37,11 @@ export function Portal({ children, zIndex = DEFAULT_Z_INDEX }: PortalProps) {
   const phaseRef = useRef<PortalPhase>(PortalPhase.INITIAL);
   const stagePortals = useContext(PortalStageContext);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     assertPortalManager(stagePortals);
   }, [stagePortals]);
 
-  useEffect(
+  useLayoutEffect(
     () => () => {
       phaseRef.current = PortalPhase.WILL_UNMOUNT;
     },
@@ -53,16 +53,20 @@ export function Portal({ children, zIndex = DEFAULT_Z_INDEX }: PortalProps) {
     keyRef.current = stagePortals?.mount(children, zIndex) as number;
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (phaseRef.current === PortalPhase.INITIAL) {
       phaseRef.current = PortalPhase.WILL_MOUNT;
       mountAsync().then(() => {
         phaseRef.current = PortalPhase.DID_MOUNT;
       });
     }
-    if (phaseRef.current === PortalPhase.DID_MOUNT) stagePortals?.update(keyRef.current, children, zIndex);
+    if (phaseRef.current === PortalPhase.DID_MOUNT) {
+      stagePortals?.update(keyRef.current, children, zIndex);
+    }
     return () => {
-      if (phaseRef.current === PortalPhase.WILL_UNMOUNT) stagePortals?.unmount(keyRef.current);
+      if (phaseRef.current === PortalPhase.WILL_UNMOUNT) {
+        stagePortals?.unmount(keyRef.current);
+      }
     };
   }, [children, zIndex, mountAsync, stagePortals]);
 
