@@ -14,7 +14,7 @@ endif::[]
 
 
 `react-konva-portal` brings https://reactjs.org/docs/portals.html[portals] support for `react-konva`
-components and allows mounting canvas elements into different `Stage` locations regardless of a particular component hierarchy.
+components and allows mounting canvas components into different `Stage` locations regardless of a particular component hierarchy.
 
 .link:https://i.imgur.com/XKOPPBN.gif[demo.gif]
 image::https://i.imgur.com/XKOPPBN.gif[420,420]

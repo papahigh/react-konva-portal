@@ -1,74 +1,45 @@
-import { ReactElement, ReactNode, useCallback, useContext, useLayoutEffect, useRef } from 'react';
-import { DEFAULT_Z_INDEX } from './portal-manager';
-import { PortalStageContext, PortalStageContextValue } from './portal-stage';
+import { ReactElement, ReactNode, useCallback, useLayoutEffect, useRef } from 'react';
+import { useStageContext } from './stage-context';
+import { PortalProps, PortalState } from './types';
+import { PORTAL_LAYER_ID, Z_INDEX } from './utils';
 
-export interface PortalProps {
-  children?: ReactNode;
-  zIndex?: number;
-}
-
-enum LifecyclePhase {
-  INITIAL,
-  WILL_MOUNT,
-  DID_MOUNT,
-  WILL_UNMOUNT,
-}
-
-export const ERROR_MESSAGE =
-  'You should wrap your root component with <Stage /> from "react-konva-portal" in order for Portals to work';
-
-export function isPortalManager(val: any): val is PortalStageContextValue {
-  return (
-    val &&
-    typeof val === 'object' &&
-    typeof val.mount === 'function' &&
-    typeof val.update === 'function' &&
-    typeof val.unmount === 'function'
-  );
-}
-
-export function assertPortalManager(val: any): val is PortalStageContextValue {
-  if (!isPortalManager(val)) throw new Error(ERROR_MESSAGE);
-  return true;
-}
-
-export function Portal({ children, zIndex = DEFAULT_Z_INDEX }: PortalProps) {
+function Portal({ children, containerId = PORTAL_LAYER_ID, zIndex = Z_INDEX }: PortalProps) {
+  const stage = useStageContext();
   const keyRef = useRef(-1);
-  const phaseRef = useRef<LifecyclePhase>(LifecyclePhase.INITIAL);
-  const stagePortals = useContext(PortalStageContext);
-
-  useLayoutEffect(() => {
-    assertPortalManager(stagePortals);
-  }, [stagePortals]);
+  const phaseRef = useRef<PortalState>(PortalState.WILL_MOUNT);
+  const containerIdRef = useRef(containerId);
 
   useLayoutEffect(
     () => () => {
-      phaseRef.current = LifecyclePhase.WILL_UNMOUNT;
+      phaseRef.current = PortalState.WILL_UNMOUNT;
     },
     [],
   );
 
   const mountAsync = useCallback(async () => {
     await Promise.resolve();
-    keyRef.current = stagePortals?.mount(children, zIndex) as number;
-  }, []);
+    keyRef.current = stage?.mount(containerId, zIndex, children) as number;
+  }, [stage, containerId, zIndex, children]);
 
   useLayoutEffect(() => {
-    if (phaseRef.current === LifecyclePhase.INITIAL) {
-      phaseRef.current = LifecyclePhase.WILL_MOUNT;
+    if (phaseRef.current === PortalState.NONE) {
+      phaseRef.current = PortalState.WILL_MOUNT;
       mountAsync().then(() => {
-        phaseRef.current = LifecyclePhase.DID_MOUNT;
+        phaseRef.current = PortalState.DID_MOUNT;
       });
     }
-    if (phaseRef.current === LifecyclePhase.DID_MOUNT) {
-      stagePortals?.update(keyRef.current, children, zIndex);
+    if (phaseRef.current === PortalState.DID_MOUNT) {
+      stage?.update(containerId, keyRef.current, zIndex, children);
     }
     return () => {
-      if (phaseRef.current === LifecyclePhase.WILL_UNMOUNT) {
-        stagePortals?.unmount(keyRef.current);
+      const force = containerIdRef.current !== containerId;
+      containerIdRef.current = containerId;
+      if (force || phaseRef.current === PortalState.WILL_UNMOUNT) {
+        stage?.unmount(containerId, keyRef.current);
+        phaseRef.current = PortalState.NONE;
       }
     };
-  }, [children, zIndex, mountAsync, stagePortals]);
+  }, [mountAsync, stage, containerId, zIndex, children]);
 
   return (null as ReactNode) as ReactElement;
 }
