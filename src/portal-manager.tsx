@@ -105,8 +105,8 @@ function PortalManagerComponent(
         lastFrameId = requestAnimationFrame(applyUpdate);
       }
 
-      const allArgs = { ...DEFAULT_DEBOUNCE, ...debounceArgs };
-      const debounceUpdate = debounce(applyUpdate, allArgs?.wait, allArgs);
+      const { wait, ...args } = { ...DEFAULT_DEBOUNCE, ...debounceArgs };
+      const debounceUpdate = debounce(applyUpdate, wait, args);
 
       function updateComponent() {
         switch (nextStrategy(updateStrategy, phaseRef.current)) {

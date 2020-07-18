@@ -14,7 +14,7 @@ endif::[]
 
 
 `react-konva-portal` brings https://reactjs.org/docs/portals.html[portals] support for `react-konva`
-components and allows mounting canvas content into different locations of the `Stage` regardless of a particular component hierarchy.
+components and allows mounting canvas elements into different `Stage` locations regardless of a particular component hierarchy.
 
 .link:https://i.imgur.com/XKOPPBN.gif[demo.gif]
 image::https://i.imgur.com/XKOPPBN.gif[420,420]
@@ -64,7 +64,7 @@ class ExampleStage extends Component {
 == API
 
 === Stage Props
-Interface StageProps inherits original StageProps from `react-konva` and extends them with the following props:
+Interface StageProps inherits original StageProps from `react-konva` and extends them with the following:
 
 portalLayerProps::
 Optional. Accepts `Konva.LayerConfig` and brings it straight to portals containing `Layer` instance from `react-konva`.
