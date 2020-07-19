@@ -3,7 +3,7 @@
 > Portals support for [react-konva](https://github.com/konvajs/react-konva)
 
 Teleport your `canvas` components across groups, layers and canvas elements regardless your component hierarchy. This
-library provides [portals support](https://reactjs.org/docs/portals.html) for `react-konva` components and may
+library provides portals support for `react-konva` components and may
 facilitate in&nbsp;a&nbsp;complex canvas scene compositions.
 
 <img src="https://i.imgur.com/XKOPPBN.gif[420,420]" width="420px" alt="react-konva-portal first example" />
@@ -54,10 +54,10 @@ class PortalExample extends Component {
 
 Optionally, You may refine desired render destination with `containerId` and `zIndex`.
 
-> With `containerId` pointing to&nbsp;target `Layer`/`Group` component from `react-konva-portal`
+> With `containerId` pointing to&nbsp;`Layer`/`Group` component from `react-konva-portal`
 > in&nbsp;your app&nbsp;tree.
 >
-> You may also provide stacking order in&nbsp;target container with `zIndex` property.
+> You may also provide stacking order in&nbsp;container with `zIndex` property.
 
 ```javascript
 import React, { Component } from 'react';
@@ -112,7 +112,7 @@ Root component for working with canvas scene composition. It accepts all `Konva.
 
 | Prop               | Note                                                                                                                                |
 | :----------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
-| _portalLayerProps_ | Optional. Accepts `Konva.LayerConfig` and brings them&nbsp;straight to&nbsp;portals `containing` Layer instance from `react-konva`. |
+| portalLayerProps | Optional. Accepts `Konva.LayerConfig` and forwards it&nbsp;to&nbsp;portals containing `Layer` instance from `react-konva`. |
 
 ### Portal
 
@@ -120,9 +120,9 @@ Special, own children-teleporting component.
 
 | Prop          | Note                                                                                                                   |
 | :------------ | :--------------------------------------------------------------------------------------------------------------------- |
-| _containerId_ | Optional. Accepts `string` value and should match _id_ prop of `Group` or `Layer` in order for content to be rendered. |
-| _zIndex_      | Optional. Specifies stacking order in target container.                                                                |
-| _children_    | Required. This property holds "travelling" content.                                                                    |
+| containerId   | Optional. Accepts `string` value and should match id prop of `Group` or `Layer` in order for content to be rendered.   |
+| zIndex        | Optional. Specifies stacking order in container.                                                                       |
+| children      | Required. This property holds "travelling" content.                                                                    |
 
 ### Layer
 
@@ -131,7 +131,7 @@ Container component with portals' content hosting capabilities. It&nbsp;accepts 
 
 | Prop | Note                                                   |
 | :--- | :----------------------------------------------------- |
-| _id_ | Required. Accepts `string` value and should be unique. |
+| id   | Required. Accepts `string` value and should be unique. |
 
 ### Group
 
@@ -139,7 +139,7 @@ Container component with portals' content hosting capabilities. It&nbsp;accept a
 
 | Prop | Note                                                   |
 | :--- | :----------------------------------------------------- |
-| _id_ | Required. Accepts `string` value and should be unique. |
+| id   | Required. Accepts `string` value and should be unique. |
 
 ## Contribute
 
