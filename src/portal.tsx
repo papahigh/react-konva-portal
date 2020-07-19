@@ -6,7 +6,7 @@ import { PORTAL_LAYER_ID, Z_INDEX } from './utils';
 function Portal({ children, containerId = PORTAL_LAYER_ID, zIndex = Z_INDEX }: PortalProps) {
   const stage = useStageContext();
   const keyRef = useRef(-1);
-  const phaseRef = useRef<PortalState>(PortalState.WILL_MOUNT);
+  const phaseRef = useRef<PortalState>(PortalState.NONE);
   const containerIdRef = useRef(containerId);
 
   useLayoutEffect(

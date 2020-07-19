@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactNode, useCallback, useImperativeHandle, useLayoutEffect, useRef } from 'react';
+import React, { forwardRef, ReactNode, useCallback, useEffect, useImperativeHandle, useRef } from 'react';
 import { Stage } from 'react-konva';
 import Layer from './portal-layer';
 import Provider from './stage-context';
@@ -10,13 +10,17 @@ function StageComponent({ children, portalLayerProps, ...props }: PortalStagePro
   const stageRef = useRef<Stage | null>(null);
   const queueRef = useRef<Record<string, ManagerCommand[]>>({});
   const managersRef = useRef<Record<string, PortalManagerRef | null>>({});
+  const deferRef = useRef(true);
 
   useImperativeHandle<Stage | null, Stage | null>(ref, () => stageRef.current, [stageRef.current]);
 
-  useLayoutEffect(() => {
-    const fallback = managersRef.current[PORTAL_LAYER_ID];
-    Object.keys(queueRef.current).forEach(id => (managersRef.current[id] ?? fallback)?.handle(queueRef.current[id]));
+  useEffect(() => {
+    Object.keys(queueRef.current).forEach(id => managersRef.current[id]?.handle(queueRef.current[id]));
+    deferRef.current = false;
     queueRef.current = {};
+    return () => {
+      deferRef.current = true;
+    };
   }, []);
 
   const addManager = useCallback((auditName: string, id: string, manager: PortalManagerRef) => {
@@ -36,7 +40,7 @@ function StageComponent({ children, portalLayerProps, ...props }: PortalStagePro
   const mount = useCallback((id: string, zIndex: number, children: ReactNode) => {
     const key = ++seqRef.current;
     const managerReady = managersRef.current[id];
-    if (managerReady) managerReady.handle(mountCmd(id, key, zIndex, children));
+    if (managerReady && !deferRef.current) managerReady.handle(mountCmd(id, key, zIndex, children));
     else {
       const queue = queueRef.current[id] || [];
       queueRef.current[id] = queue;
@@ -47,7 +51,7 @@ function StageComponent({ children, portalLayerProps, ...props }: PortalStagePro
 
   const update = useCallback((id: string, key: number, zIndex: number, children: ReactNode) => {
     const managerReady = managersRef.current[id];
-    if (managerReady) managerReady.handle(updateCmd(id, key, zIndex, children));
+    if (managerReady && !deferRef.current) managerReady.handle(updateCmd(id, key, zIndex, children));
     else {
       const queue = queueRef.current[id] || [];
       queueRef.current[id] = queue;
@@ -66,6 +70,15 @@ function StageComponent({ children, portalLayerProps, ...props }: PortalStagePro
       queue.push(unmountCmd(id, key));
     }
   }, []);
+
+  useEffect(
+    () => () => {
+      Object.keys(queueRef.current).forEach(id => managersRef.current[id]?.handle(queueRef.current[id]));
+      deferRef.current = false;
+      queueRef.current = {};
+    },
+    [],
+  );
 
   return (
     <Stage ref={stageRef} {...props}>
