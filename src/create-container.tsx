@@ -5,15 +5,15 @@ import React, {
   PropsWithChildren,
   PropsWithoutRef,
   RefAttributes,
+  useEffect,
   useImperativeHandle,
-  useLayoutEffect,
   useRef,
 } from 'react';
 import { KonvaNodeComponent } from 'react-konva';
 import PortalManager from './portal-manager';
 import { useStageContext } from './stage-context';
 import type { ForwardedRef, PortalManagerRef } from './types';
-import { useForceRender, warnIfDev } from './utils';
+import { warnIfDev } from './utils';
 
 export function createPortalContainer<
   KonvaNode extends Konva.Node,
@@ -25,42 +25,32 @@ export function createPortalContainer<
 ): ForwardRefExoticComponent<PropsWithoutRef<KonvaProps> & RefAttributes<KonvaNode>> {
   function PortalContainer(props: PropsWithChildren<KonvaProps>, ref: ForwardedRef<KonvaNode>) {
     const { id, children } = props;
-    const idRef = useRef(id);
     const konvaRef = useRef<KonvaNode | null>(null);
     const managerRef = useRef<PortalManagerRef | null>(null);
-    const forceRender = useForceRender();
 
     const stage = useStageContext();
-    const hasId = idRef.current != null;
     const Konva = Component as React.ComponentType<KonvaProps>;
 
     useImperativeHandle<KonvaNode | null, KonvaNode | null>(ref, () => konvaRef.current, [konvaRef.current]);
 
-    useLayoutEffect(() => {
-      if (id !== idRef.current) {
-        idRef.current = id;
-        forceRender();
-      }
-      if (!hasId) {
+    useEffect(() => {
+      if (id == null) {
         warnIfDev(`Portals are not unavailable for ${auditName} without id.`);
       }
-    }, [auditName, id, hasId, forceRender]);
+    }, [id, auditName]);
 
-    useLayoutEffect(() => {
-      if (hasId && managerRef.current) {
-        stage?.addManager(auditName, idRef.current!, managerRef.current);
-      }
+    useEffect(() => {
+      if (id != null && managerRef.current) stage?.addManager(auditName, id!, managerRef.current);
+
       return () => {
-        if (hasId) {
-          stage?.removeManager(auditName, idRef.current!);
-        }
+        if (id != null) stage?.removeManager(auditName, id!);
       };
-    }, [auditName, hasId, stage]);
+    }, [auditName, stage]);
 
     return (
-      <Konva {...props} id={idRef.current} ref={konvaRef}>
+      <Konva {...props} key={id} id={id} ref={konvaRef}>
         {children}
-        <PortalManager ref={managerRef} key={idRef.current} />
+        <PortalManager id={id} ref={managerRef} auditName={auditName} />
       </Konva>
     );
   }

@@ -1,7 +1,7 @@
 assets/
-example/
+example-1/
+example-2/
 src/
-tsconfig.json
 tsconfig.test.json
 rollup.config.js
 .rpt2_cache

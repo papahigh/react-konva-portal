@@ -4,4 +4,3 @@ import createPortalContainer from './create-container';
 
 const PortalLayer = createPortalContainer<Konva.Layer, Konva.LayerConfig, typeof Layer>(Layer, 'Layer');
 export default PortalLayer;
-

@@ -15,6 +15,8 @@ export interface PortalStageContext {
 }
 
 export interface PortalManagerProps {
+  id?: string;
+  auditName?: string;
 }
 
 export interface PortalManagerRef {

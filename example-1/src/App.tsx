@@ -1,5 +1,4 @@
-import css from 'dom-css';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { Layer } from 'react-konva';
 import { Stage } from 'react-konva-portal';
 
@@ -19,11 +18,6 @@ const ELEMENT_SPACING = -20;
 export function App() {
   const [usePortal, setUsePortal] = useState(true);
   const [showOverlay, setShowOverlay] = useState(false);
-
-  const onMouseEnter = useCallback(() => css(document.body, { cursor: 'grab' }), []);
-  const onMouseLeave = useCallback(() => css(document.body, { cursor: 'default' }), []);
-  const onMouseDown = useCallback(() => css(document.body, { cursor: 'grabbing' }), []);
-  const onMouseUp = useCallback(() => css(document.body, { cursor: 'grab' }), []);
 
   const togglePortal = () => setUsePortal(value => !value);
   const toggleOverlay = () => setShowOverlay(value => !value);
@@ -46,10 +40,6 @@ export function App() {
                 y={CANVAS_SIZE / 2 - ELEMENT_SIZE / 2}
                 size={ELEMENT_SIZE}
                 usePortal={usePortal}
-                onMouseEnter={onMouseEnter}
-                onMouseLeave={onMouseLeave}
-                onMouseDown={onMouseDown}
-                onMouseUp={onMouseUp}
                 zIndex={MAX_ELEMENTS - i}
               />
             ))}

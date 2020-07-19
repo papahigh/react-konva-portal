@@ -63,7 +63,7 @@ function StageComponent({ children, portalLayerProps, ...props }: PortalStagePro
 
   const unmount = useCallback((id: string, key: number) => {
     const managerReady = managersRef.current[id];
-    if (managerReady) managerReady.handle(unmountCmd(id, key));
+    if (managerReady && !deferRef.current) managerReady.handle(unmountCmd(id, key));
     else {
       const queue = queueRef.current[id] || [];
       queueRef.current[id] = queue;

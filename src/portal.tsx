@@ -1,27 +1,26 @@
-import { ReactElement, ReactNode, useCallback, useLayoutEffect, useRef } from 'react';
+import React, { ReactElement, ReactNode, useCallback, useEffect, useRef } from 'react';
 import { useStageContext } from './stage-context';
 import { PortalProps, PortalState } from './types';
 import { PORTAL_LAYER_ID, Z_INDEX } from './utils';
 
-function Portal({ children, containerId = PORTAL_LAYER_ID, zIndex = Z_INDEX }: PortalProps) {
+function Teleport(props: PortalProps) {
+  const { children, containerId = PORTAL_LAYER_ID, zIndex = Z_INDEX } = props;
   const stage = useStageContext();
-  const keyRef = useRef(-1);
+  const keyRef = useRef<number>(0);
   const phaseRef = useRef<PortalState>(PortalState.NONE);
-  const containerIdRef = useRef(containerId);
 
-  useLayoutEffect(
-    () => () => {
+  useEffect(() => {
+    return () => {
       phaseRef.current = PortalState.WILL_UNMOUNT;
-    },
-    [],
-  );
+    };
+  }, []);
 
   const mountAsync = useCallback(async () => {
     await Promise.resolve();
     keyRef.current = stage?.mount(containerId, zIndex, children) as number;
   }, [stage, containerId, zIndex, children]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (phaseRef.current === PortalState.NONE) {
       phaseRef.current = PortalState.WILL_MOUNT;
       mountAsync().then(() => {
@@ -32,16 +31,17 @@ function Portal({ children, containerId = PORTAL_LAYER_ID, zIndex = Z_INDEX }: P
       stage?.update(containerId, keyRef.current, zIndex, children);
     }
     return () => {
-      const force = containerIdRef.current !== containerId;
-      containerIdRef.current = containerId;
-      if (force || phaseRef.current === PortalState.WILL_UNMOUNT) {
+      if (phaseRef.current === PortalState.WILL_UNMOUNT) {
         stage?.unmount(containerId, keyRef.current);
-        phaseRef.current = PortalState.NONE;
       }
     };
   }, [mountAsync, stage, containerId, zIndex, children]);
 
   return (null as ReactNode) as ReactElement;
+}
+
+function Portal({ containerId, ...props }: PortalProps) {
+  return <Teleport {...props} key={containerId} containerId={containerId} />;
 }
 
 export default Portal;

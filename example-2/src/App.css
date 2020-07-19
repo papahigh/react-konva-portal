@@ -1,0 +1,50 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.container header {
+  background-color: black;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.container header h1 {
+  color: #fff;
+  margin: 0;
+}
+
+.container .stage-example {
+  background-color: #e7e7e7;
+}
+
+.container footer {
+  padding: 40px;
+}
+
+.container footer > p {
+  max-width: 420px;
+  margin: 0 auto;
+  padding-bottom: 20px;
+  text-align: center;
+}
+
+.container footer ul {
+  width: 260px;
+  margin: 0 auto;
+  list-style: none;
+  user-select: none;
+}
+
+.container footer ul li p button {
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  padding-left: 64px;
+}

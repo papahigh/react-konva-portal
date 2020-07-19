@@ -3,11 +3,14 @@
     "outDir": "dist",
     "module": "esnext",
     "target": "esnext",
-    "lib": ["dom", "esnext"],
+    "lib": [
+      "dom",
+      "esnext"
+    ],
     "moduleResolution": "node",
     "jsx": "react",
+    "sourceMap": true,
     "declaration": true,
-    "importHelpers": true,
     "esModuleInterop": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
@@ -15,17 +18,21 @@
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
-    "skipLibCheck": true,
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "allowJs": true,
     "isolatedModules": true,
     "noEmit": true
   },
-  "files": ["src/index.tsx"],
-  "exclude": ["node_modules", "dist", "example-1", "example-2", "src/*.test.ts", "src/*.test.tsx", "src/setupTests.ts"],
-  "include": ["src"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "build"
+  ]
 }
