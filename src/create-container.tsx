@@ -12,7 +12,7 @@ import React, {
 import { KonvaNodeComponent } from 'react-konva';
 import PortalManager from './portal-manager';
 import { useStageContext } from './stage-context';
-import type { ForwardedRef, PortalManagerRef } from './types';
+import { ForwardedRef, PortalManagerRef } from './types';
 import { warnIfDev } from './utils';
 
 export function createPortalContainer<
@@ -45,12 +45,12 @@ export function createPortalContainer<
       return () => {
         if (id != null) stage?.removeManager(auditName, id!);
       };
-    }, [auditName, stage]);
+    }, [id, stage, auditName]);
 
     return (
-      <Konva {...props} key={id} id={id} ref={konvaRef}>
+      <Konva {...props} id={id} ref={konvaRef}>
         {children}
-        <PortalManager id={id} ref={managerRef} auditName={auditName} />
+        <PortalManager id={id} ref={managerRef} auditName={auditName} key={id} />
       </Konva>
     );
   }

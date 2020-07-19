@@ -1,12 +1,5 @@
 import { ReactNode, useReducer } from 'react';
-import type {
-  ManagerCommand,
-  MountCommand,
-  PortalMeta,
-  PortalStageContext,
-  UnmountCommand,
-  UpdateCommand,
-} from './types';
+import { ManagerCommand, MountCommand, PortalMeta, PortalStageContext, UnmountCommand, UpdateCommand } from './types';
 
 export const Z_INDEX = 0;
 export const PORTAL_LAYER_ID = 'react-konva-portals';
@@ -40,7 +33,7 @@ export function zIndexComparator(a: PortalMeta, b: PortalMeta) {
   const { zIndex: zIndexA = Z_INDEX } = a;
   const { zIndex: zIndexB = Z_INDEX } = b;
   if (zIndexA === zIndexB) return 0;
-  return zIndexA > zIndexB ? 1 : -1;
+  return zIndexA > zIndexB ? -1 : 1;
 }
 
 export function mountCmd(id: string, key: number, zIndex: number, children: ReactNode): MountCommand {

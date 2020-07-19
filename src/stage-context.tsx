@@ -1,5 +1,5 @@
 import React, { createContext, PropsWithChildren, useContext, useLayoutEffect, useMemo } from 'react';
-import type { PortalStageContext } from './types';
+import { PortalStageContext } from './types';
 import { assertStageContext } from './utils';
 
 export const StageContext = createContext<PortalStageContext | null>(null);

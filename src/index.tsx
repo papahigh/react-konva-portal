@@ -2,8 +2,6 @@ import Konva from 'konva';
 import { Group as GroupComp, Layer as LayerComp } from 'react-konva';
 import createPortalContainer from './create-container';
 
-export type { PortalProps, PortalStageProps as StageProps } from './types';
-
 export { default as Portal } from './portal';
 export { default as Stage } from './portal-stage';
 

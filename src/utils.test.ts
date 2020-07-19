@@ -72,15 +72,15 @@ describe('utils.ts', () => {
       ];
       const result = nodes.sort(zIndexComparator);
       expect(result).toStrictEqual([
-        createNode(-100),
-        createNode(-10),
-        createNode(0),
-        createNode(10),
-        createNode(20),
-        createNode(30),
-        createNode(40),
-        createNode(50),
         createNode(60),
+        createNode(50),
+        createNode(40),
+        createNode(30),
+        createNode(20),
+        createNode(10),
+        createNode(0),
+        createNode(-10),
+        createNode(-100),
       ]);
     });
 
@@ -98,15 +98,15 @@ describe('utils.ts', () => {
       ];
       const result = input.sort(zIndexComparator);
       expect(result).toStrictEqual([
-        createNode(-100),
-        createNode(-10),
-        createNode(),
-        createNode(),
-        createNode(10),
-        createNode(30),
-        createNode(40),
-        createNode(50),
         createNode(60),
+        createNode(50),
+        createNode(40),
+        createNode(30),
+        createNode(10),
+        createNode(),
+        createNode(),
+        createNode(-10),
+        createNode(-100),
       ]);
     });
   });

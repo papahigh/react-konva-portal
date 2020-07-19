@@ -1,6 +1,6 @@
 import Konva from 'konva';
-import type { MutableRefObject, ReactNode } from 'react';
-import type { StageProps } from 'react-konva';
+import { MutableRefObject, ReactNode } from 'react';
+import { StageProps } from 'react-konva';
 
 export interface PortalStageProps extends StageProps {
   portalLayerProps?: Partial<Konva.LayerConfig>;

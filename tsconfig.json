@@ -25,7 +25,6 @@
     "isolatedModules": true,
     "noEmit": true
   },
-  "files": ["src/index.tsx"],
   "exclude": ["node_modules", "dist", "example-1", "example-2", "src/*.test.ts", "src/*.test.tsx", "src/setupTests.ts"],
   "include": ["src"]
 }

@@ -1,5 +1,5 @@
 import React, { forwardRef, ReactElement, ReactNode, useEffect, useImperativeHandle, useRef } from 'react';
-import type {
+import {
   CommandHandler,
   ForwardedRef,
   ManagerCommand,

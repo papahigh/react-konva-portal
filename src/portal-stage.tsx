@@ -2,7 +2,7 @@ import React, { forwardRef, ReactNode, useCallback, useEffect, useImperativeHand
 import { Stage } from 'react-konva';
 import Layer from './portal-layer';
 import Provider from './stage-context';
-import type { ForwardedRef, ManagerCommand, PortalManagerRef, PortalStageProps } from './types';
+import { ForwardedRef, ManagerCommand, PortalManagerRef, PortalStageProps } from './types';
 import { mountCmd, notUnmountByKey, PORTAL_LAYER_ID, unmountCmd, updateCmd, warnIfDev } from './utils';
 
 function StageComponent({ children, portalLayerProps, ...props }: PortalStageProps, ref: ForwardedRef<Stage>) {
