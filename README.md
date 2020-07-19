@@ -54,7 +54,7 @@ class PortalExample extends Component {
 
 Optionally, You may refine desired render destination with `containerId` and `zIndex`.
 
-> With `containerId` pointing to&nbsp;target `Layer` or&nbsp;`Group` component from `react-konva-portal`
+> With `containerId` pointing to&nbsp;target `Layer`/`Group` component from `react-konva-portal`
 > in&nbsp;your app&nbsp;tree.
 >
 > You may also provide stacking order in&nbsp;target container with `zIndex` property.
@@ -99,7 +99,7 @@ class TeleportExample extends Component {
 
 ## API
 
-This package exposes `Stage`, `Portal`, `Layer` and `Group` React components involved.
+This package exposes `Stage`, `Portal`, `Layer` and `Group` React components.
 
 ```javascript
 import { Group, Stage, Portal, Layer } from 'react-konva-portal';
@@ -116,7 +116,7 @@ Root component for working with canvas scene composition. It accepts all `Konva.
 
 ### Portal
 
-Component who teleports its children.
+Special, own children-teleporting component.
 
 | Prop          | Note                                                                                                                   |
 | :------------ | :--------------------------------------------------------------------------------------------------------------------- |
@@ -126,7 +126,7 @@ Component who teleports its children.
 
 ### Layer
 
-Container component who may host portals content. It&nbsp;accepts all `Konva.Layer` props and forwards the original
+Container component with portals' content hosting capabilities. It&nbsp;accepts all `Konva.Layer` props and forwards the original
 `ref`.
 
 | Prop | Note                                                   |
@@ -135,7 +135,7 @@ Container component who may host portals content. It&nbsp;accepts all `Konva.Lay
 
 ### Group
 
-Container component who may host portals content. It&nbsp;accept all `Konva.Node` props and forwards the original `ref`.
+Container component with portals' content hosting capabilities. It&nbsp;accept all `Konva.Node` props and forwards the original `ref`.
 
 | Prop | Note                                                   |
 | :--- | :----------------------------------------------------- |

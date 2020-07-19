@@ -25,7 +25,7 @@ function StageComponent({ children, portalLayerProps, ...props }: PortalStagePro
 
   const addManager = useCallback((auditName: string, id: string, manager: PortalManagerRef) => {
     if (managersRef.current[id]) {
-      warnIfDev(`Fond ${auditName} with duplicate id "${id}".`);
+      warnIfDev(`Found ${auditName} with duplicate id "${id}".`);
     }
     managersRef.current[id] = manager;
   }, []);
