@@ -40,34 +40,34 @@ function StageComponent({ children, portalLayerProps, ...props }: PortalStagePro
   const mount = useCallback((id: string, zIndex: number, children: ReactNode) => {
     const key = ++seqRef.current;
     const managerReady = managersRef.current[id];
-    if (managerReady && !deferRef.current) managerReady.handle(mountCmd(id, key, zIndex, children));
+    if (managerReady && !deferRef.current) managerReady.handle(mountCmd(key, zIndex, children));
     else {
       const queue = queueRef.current[id] || [];
       queueRef.current[id] = queue;
-      queue.push(mountCmd(id, key, zIndex, children));
+      queue.push(mountCmd(key, zIndex, children));
     }
     return key;
   }, []);
 
   const update = useCallback((id: string, key: number, zIndex: number, children: ReactNode) => {
     const managerReady = managersRef.current[id];
-    if (managerReady && !deferRef.current) managerReady.handle(updateCmd(id, key, zIndex, children));
+    if (managerReady && !deferRef.current) managerReady.handle(updateCmd(key, zIndex, children));
     else {
       const queue = queueRef.current[id] || [];
       queueRef.current[id] = queue;
       const index = queue.findIndex(notUnmountByKey(key));
-      if (index === -1) queue.push(mountCmd(id, key, zIndex, children));
-      else queue.splice(index, 1, mountCmd(id, key, zIndex, children));
+      if (index === -1) queue.push(mountCmd(key, zIndex, children));
+      else queue.splice(index, 1, mountCmd(key, zIndex, children));
     }
   }, []);
 
   const unmount = useCallback((id: string, key: number) => {
     const managerReady = managersRef.current[id];
-    if (managerReady && !deferRef.current) managerReady.handle(unmountCmd(id, key));
+    if (managerReady && !deferRef.current) managerReady.handle(unmountCmd(key));
     else {
       const queue = queueRef.current[id] || [];
       queueRef.current[id] = queue;
-      queue.push(unmountCmd(id, key));
+      queue.push(unmountCmd(key));
     }
   }, []);
 

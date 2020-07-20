@@ -28,20 +28,21 @@ function ManagerComponent(_: PortalManagerProps, ref: ForwardedRef<PortalManager
   useImperativeHandle<PortalManagerRef, PortalManagerRef>(
     ref,
     () => {
-      function mount(cmd: MountCommand) {
-        portalsByIdRef.current[cmd.key] = cmd;
-        portalsRef.current.push({ ...cmd });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      function mount({ type, ...meta }: MountCommand) {
+        portalsByIdRef.current[meta.key] = meta;
+        portalsRef.current.push(meta);
         portalsRef.current = portalsRef.current.sort(zIndexComparator);
       }
 
       function update(cmd: UpdateCommand) {
-        const curr = portalsByIdRef.current[cmd.key] || {};
-        const resort = curr.zIndex !== cmd.zIndex;
-        curr.key = cmd.key;
-        curr.zIndex = cmd.zIndex;
-        curr.children = cmd.children;
-        portalsByIdRef.current[cmd.key] = curr;
-        if (resort) portalsRef.current = portalsRef.current.sort(zIndexComparator);
+        const target = portalsByIdRef.current[cmd.key];
+        if (target) {
+          const resort = target.zIndex !== cmd.zIndex;
+          target.zIndex = cmd.zIndex;
+          target.children = cmd.children;
+          if (resort) portalsRef.current = portalsRef.current.sort(zIndexComparator);
+        }
       }
 
       function unmount(cmd: UnmountCommand) {

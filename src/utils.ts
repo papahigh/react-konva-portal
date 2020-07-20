@@ -33,19 +33,19 @@ export function zIndexComparator(a: PortalMeta, b: PortalMeta) {
   const { zIndex: zIndexA = Z_INDEX } = a;
   const { zIndex: zIndexB = Z_INDEX } = b;
   if (zIndexA === zIndexB) return 0;
-  return zIndexA > zIndexB ? -1 : 1;
+  return zIndexA > zIndexB ? 1 : -1;
 }
 
-export function mountCmd(id: string, key: number, zIndex: number, children: ReactNode): MountCommand {
-  return { type: 'mount', id, key, zIndex, children };
+export function mountCmd(key: number, zIndex: number, children: ReactNode): MountCommand {
+  return { type: 'mount', key, zIndex, children };
 }
 
-export function updateCmd(id: string, key: number, zIndex: number, children: ReactNode): UpdateCommand {
-  return { type: 'update', id, key, zIndex, children };
+export function updateCmd(key: number, zIndex: number, children: ReactNode): UpdateCommand {
+  return { type: 'update', key, zIndex, children };
 }
 
-export function unmountCmd(id: string, key: number): UnmountCommand {
-  return { type: 'unmount', key, id };
+export function unmountCmd(key: number): UnmountCommand {
+  return { type: 'unmount', key };
 }
 
 export function notUnmountByKey(key: number) {

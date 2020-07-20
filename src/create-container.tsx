@@ -35,7 +35,7 @@ export function createPortalContainer<
 
     useEffect(() => {
       if (id == null) {
-        warnIfDev(`Portals are not unavailable for ${auditName} without id.`);
+        warnIfDev(`${auditName} is missing id prop and cannot be used as portals container.`);
       }
     }, [id, auditName]);
 

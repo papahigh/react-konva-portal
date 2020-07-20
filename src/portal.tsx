@@ -9,11 +9,12 @@ function Teleport(props: PortalProps) {
   const keyRef = useRef<number>(0);
   const phaseRef = useRef<PortalState>(PortalState.NONE);
 
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       phaseRef.current = PortalState.WILL_UNMOUNT;
-    };
-  }, []);
+    },
+    [],
+  );
 
   const mountAsync = useCallback(async () => {
     await Promise.resolve();

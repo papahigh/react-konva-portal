@@ -42,9 +42,9 @@ export interface PortalMeta {
   children: ReactNode;
 }
 
-export type MountCommand = { type: 'mount'; key: number; id: string; zIndex: number; children: ReactNode };
-export type UpdateCommand = { type: 'update'; key: number; id: string; zIndex: number; children: ReactNode };
-export type UnmountCommand = { type: 'unmount'; key: number; id: string };
+export type MountCommand = { type: 'mount'; key: number; zIndex: number; children: ReactNode };
+export type UpdateCommand = { type: 'update'; key: number; zIndex: number; children: ReactNode };
+export type UnmountCommand = { type: 'unmount'; key: number; };
 export type ManagerCommand = MountCommand | UpdateCommand | UnmountCommand;
 
 export type CommandHandler<Command = ManagerCommand> = (cmd: Command) => void;
