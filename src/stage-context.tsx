@@ -1,14 +1,8 @@
-import React, { createContext, PropsWithChildren, useContext, useLayoutEffect, useMemo } from 'react';
+import React, { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import { PortalStageContext } from './types';
-import { assertStageContext } from './utils';
+import { ERROR_MESSAGE } from './utils';
 
 export const StageContext = createContext<PortalStageContext | null>(null);
-
-export function useStageContext() {
-  const value = useContext(StageContext);
-  useLayoutEffect(() => assertStageContext(value), [value]);
-  return value;
-}
 
 function Provider({
   mount,
@@ -18,14 +12,24 @@ function Provider({
   addManager,
   removeManager,
 }: PropsWithChildren<PortalStageContext>) {
-  const value = useMemo(() => ({ mount, unmount, update, addManager, removeManager }), [
-    mount,
-    unmount,
-    update,
-    addManager,
-    removeManager,
-  ]);
+  const value = useMemo(() => {
+    const context = { mount, unmount, update, addManager, removeManager };
+    Object.defineProperty(context, '__type', { value: TYPE_MARKER, enumerable: false, writable: false });
+    return context;
+  }, [mount, unmount, update, addManager, removeManager]);
   return <StageContext.Provider value={value}>{children}</StageContext.Provider>;
+}
+
+const TYPE_MARKER = Symbol();
+
+function isStageContext(val: any): val is PortalStageContext {
+  return val && typeof val === 'object' && val['__type'] === TYPE_MARKER;
+}
+
+export function useStageContext() {
+  const value = useContext(StageContext);
+  if (!isStageContext(value)) throw new Error(ERROR_MESSAGE);
+  return value;
 }
 
 export default Provider;

@@ -30,7 +30,6 @@ export interface PortalProps {
 }
 
 export enum PortalState {
-  NONE,
   WILL_MOUNT,
   DID_MOUNT,
   WILL_UNMOUNT,

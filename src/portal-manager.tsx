@@ -28,7 +28,6 @@ function ManagerComponent(_: PortalManagerProps, ref: ForwardedRef<PortalManager
   useImperativeHandle<PortalManagerRef, PortalManagerRef>(
     ref,
     () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       function mount({ type, ...meta }: MountCommand) {
         portalsByIdRef.current[meta.key] = meta;
         portalsRef.current.push(meta);

@@ -1,31 +1,24 @@
-import React, { ReactElement, ReactNode, useCallback, useEffect, useRef } from 'react';
+import React, { ReactElement, ReactNode, useLayoutEffect, useRef } from 'react';
 import { useStageContext } from './stage-context';
 import { PortalProps, PortalState } from './types';
 import { PORTAL_LAYER_ID, Z_INDEX } from './utils';
 
 function Transporter({ children, containerId = PORTAL_LAYER_ID, zIndex = Z_INDEX }: PortalProps) {
   const stage = useStageContext();
-  const keyRef = useRef<number>(0);
-  const phaseRef = useRef<PortalState>(PortalState.NONE);
+  const keyRef = useRef<number>(-1);
+  const phaseRef = useRef<PortalState>(PortalState.WILL_MOUNT);
 
-  useEffect(
+  useLayoutEffect(
     () => () => {
       phaseRef.current = PortalState.WILL_UNMOUNT;
     },
     [],
   );
 
-  const mountAsync = useCallback(async () => {
-    await Promise.resolve();
-    keyRef.current = stage?.mount(containerId, zIndex, children) as number;
-  }, [stage, containerId, zIndex, children]);
-
-  useEffect(() => {
-    if (phaseRef.current === PortalState.NONE) {
-      phaseRef.current = PortalState.WILL_MOUNT;
-      mountAsync().then(() => {
-        phaseRef.current = PortalState.DID_MOUNT;
-      });
+  useLayoutEffect(() => {
+    if (phaseRef.current === PortalState.WILL_MOUNT) {
+      keyRef.current = stage?.mount(containerId, zIndex, children) as number;
+      phaseRef.current = PortalState.DID_MOUNT;
     }
     if (phaseRef.current === PortalState.DID_MOUNT) {
       stage?.update(containerId, keyRef.current, zIndex, children);
@@ -35,7 +28,7 @@ function Transporter({ children, containerId = PORTAL_LAYER_ID, zIndex = Z_INDEX
         stage?.unmount(containerId, keyRef.current);
       }
     };
-  }, [mountAsync, stage, containerId, zIndex, children]);
+  }, [stage, containerId, zIndex, children]);
 
   return (null as ReactNode) as ReactElement;
 }

@@ -1,8 +1,8 @@
 import { ReactNode, useReducer } from 'react';
-import { ManagerCommand, MountCommand, PortalMeta, PortalStageContext, UnmountCommand, UpdateCommand } from './types';
+import { ManagerCommand, MountCommand, PortalMeta, UnmountCommand, UpdateCommand } from './types';
 
 export const Z_INDEX = 0;
-export const PORTAL_LAYER_ID = 'react-konva-portals';
+export const PORTAL_LAYER_ID = 'react-konva-portal';
 export const ERROR_MESSAGE =
   'You should wrap your root component with <Stage /> from "react-konva-portal" in order for Portals to work';
 
@@ -11,22 +11,6 @@ export type RenderFunction = () => void;
 export function useForceRender(): RenderFunction {
   const [, forceRender] = useReducer(i => i + 1, 0);
   return forceRender;
-}
-
-export function isStageContext(val: any): val is PortalStageContext {
-  return (
-    val &&
-    typeof val === 'object' &&
-    typeof val.mount === 'function' &&
-    typeof val.update === 'function' &&
-    typeof val.unmount === 'function' &&
-    typeof val.addManager === 'function' &&
-    typeof val.removeManager === 'function'
-  );
-}
-
-export function assertStageContext(val: any) {
-  if (!isStageContext(val)) throw new Error(ERROR_MESSAGE);
 }
 
 export function zIndexComparator(a: PortalMeta, b: PortalMeta) {

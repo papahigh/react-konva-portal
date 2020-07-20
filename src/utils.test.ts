@@ -1,13 +1,5 @@
 import { PortalMeta } from './types';
-import {
-  assertStageContext,
-  ERROR_MESSAGE,
-  mountCmd,
-  notUnmountByKey,
-  unmountCmd,
-  updateCmd,
-  zIndexComparator,
-} from './utils';
+import { mountCmd, notUnmountByKey, unmountCmd, updateCmd, zIndexComparator } from './utils';
 
 describe('utils.ts', () => {
   describe('notUnmountByKey()', () => {
@@ -103,23 +95,6 @@ describe('utils.ts', () => {
         createNode(50),
         createNode(60),
       ]);
-    });
-  });
-
-  describe('assertStageContext()', () => {
-    it('throws error for incorrect input', () => {
-      const tryAction = (val: any) => () => assertStageContext(val);
-      expect(tryAction(Infinity)).toThrow(ERROR_MESSAGE);
-      expect(tryAction({})).toThrow(ERROR_MESSAGE);
-      expect(tryAction(true)).toThrow(ERROR_MESSAGE);
-      expect(tryAction(false)).toThrow(ERROR_MESSAGE);
-      expect(tryAction('Hello')).toThrow(ERROR_MESSAGE);
-    });
-
-    it('throws error if manager is `null` or `undefined`', () => {
-      const tryAction = (val: null | undefined) => () => assertStageContext(val);
-      expect(tryAction(null)).toThrow(ERROR_MESSAGE);
-      expect(tryAction(undefined)).toThrow(ERROR_MESSAGE);
     });
   });
 });

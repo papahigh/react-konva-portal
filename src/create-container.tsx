@@ -5,15 +5,14 @@ import React, {
   PropsWithChildren,
   PropsWithoutRef,
   RefAttributes,
-  useEffect,
   useImperativeHandle,
+  useLayoutEffect,
   useRef,
 } from 'react';
 import { KonvaNodeComponent } from 'react-konva';
 import PortalManager from './portal-manager';
 import { useStageContext } from './stage-context';
 import { ForwardedRef, PortalManagerRef } from './types';
-import { warnIfDev } from './utils';
 
 export function createPortalContainer<
   KonvaNode extends Konva.Node,
@@ -33,13 +32,7 @@ export function createPortalContainer<
 
     useImperativeHandle<KonvaNode | null, KonvaNode | null>(ref, () => konvaRef.current, [konvaRef.current]);
 
-    useEffect(() => {
-      if (id == null) {
-        warnIfDev(`${auditName} is missing id prop and cannot be used as portals container.`);
-      }
-    }, [id, auditName]);
-
-    useEffect(() => {
+    useLayoutEffect(() => {
       if (id != null && managerRef.current) stage?.addManager(auditName, id!, managerRef.current);
       return () => {
         if (id != null) stage?.removeManager(auditName, id!);
