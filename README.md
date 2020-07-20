@@ -116,7 +116,7 @@ Root component for working with canvas scene composition. It accepts all `Konva.
 
 ### Portal
 
-Special, own children-teleporting component.
+Special, own children teleporting component.
 
 | Prop          | Note                                                                                                                   |
 | :------------ | :--------------------------------------------------------------------------------------------------------------------- |

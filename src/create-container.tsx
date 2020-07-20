@@ -41,7 +41,6 @@ export function createPortalContainer<
 
     useEffect(() => {
       if (id != null && managerRef.current) stage?.addManager(auditName, id!, managerRef.current);
-
       return () => {
         if (id != null) stage?.removeManager(auditName, id!);
       };

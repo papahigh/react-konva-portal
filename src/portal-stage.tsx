@@ -16,8 +16,8 @@ function StageComponent({ children, portalLayerProps, ...props }: PortalStagePro
 
   useEffect(() => {
     Object.keys(queueRef.current).forEach(id => managersRef.current[id]?.handle(queueRef.current[id]));
-    deferRef.current = false;
     queueRef.current = {};
+    deferRef.current = false;
     return () => {
       deferRef.current = true;
     };
@@ -43,8 +43,8 @@ function StageComponent({ children, portalLayerProps, ...props }: PortalStagePro
     if (managerReady && !deferRef.current) managerReady.handle(mountCmd(key, zIndex, children));
     else {
       const queue = queueRef.current[id] || [];
-      queueRef.current[id] = queue;
       queue.push(mountCmd(key, zIndex, children));
+      queueRef.current[id] = queue;
     }
     return key;
   }, []);
@@ -54,10 +54,10 @@ function StageComponent({ children, portalLayerProps, ...props }: PortalStagePro
     if (managerReady && !deferRef.current) managerReady.handle(updateCmd(key, zIndex, children));
     else {
       const queue = queueRef.current[id] || [];
-      queueRef.current[id] = queue;
       const index = queue.findIndex(notUnmountByKey(key));
       if (index === -1) queue.push(mountCmd(key, zIndex, children));
       else queue.splice(index, 1, mountCmd(key, zIndex, children));
+      queueRef.current[id] = queue;
     }
   }, []);
 
@@ -66,16 +66,16 @@ function StageComponent({ children, portalLayerProps, ...props }: PortalStagePro
     if (managerReady && !deferRef.current) managerReady.handle(unmountCmd(key));
     else {
       const queue = queueRef.current[id] || [];
-      queueRef.current[id] = queue;
       queue.push(unmountCmd(key));
+      queueRef.current[id] = queue;
     }
   }, []);
 
   useEffect(
     () => () => {
       Object.keys(queueRef.current).forEach(id => managersRef.current[id]?.handle(queueRef.current[id]));
-      deferRef.current = false;
       queueRef.current = {};
+      deferRef.current = false;
     },
     [],
   );

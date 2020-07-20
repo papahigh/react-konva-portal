@@ -3,8 +3,7 @@ import { useStageContext } from './stage-context';
 import { PortalProps, PortalState } from './types';
 import { PORTAL_LAYER_ID, Z_INDEX } from './utils';
 
-function Teleport(props: PortalProps) {
-  const { children, containerId = PORTAL_LAYER_ID, zIndex = Z_INDEX } = props;
+function Transporter({ children, containerId = PORTAL_LAYER_ID, zIndex = Z_INDEX }: PortalProps) {
   const stage = useStageContext();
   const keyRef = useRef<number>(0);
   const phaseRef = useRef<PortalState>(PortalState.NONE);
@@ -42,7 +41,7 @@ function Teleport(props: PortalProps) {
 }
 
 function Portal({ containerId, ...props }: PortalProps) {
-  return <Teleport {...props} key={containerId} containerId={containerId} />;
+  return <Transporter {...props} key={containerId} containerId={containerId} />;
 }
 
 export default Portal;
