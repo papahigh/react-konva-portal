@@ -37,9 +37,3 @@ export function notUnmountByKey(key: number) {
     return item.key === key && item.type !== 'unmount';
   };
 }
-
-export function warnIfDev(...args: any[]) {
-  if (process.env.NODE_ENV === 'development') {
-    console.warn(...args);
-  }
-}

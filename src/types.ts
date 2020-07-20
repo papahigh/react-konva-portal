@@ -10,13 +10,12 @@ export interface PortalStageContext {
   mount: (id: string, zIndex: number, children: ReactNode) => number;
   update: (id: string, key: number, zIndex: number, children: ReactNode) => void;
   unmount: (id: string, key: number) => void;
-  addManager: (auditName: string, id: string, manager: PortalManagerRef) => void;
-  removeManager: (auditName: string, id: string) => void;
+  addManager: (id: string, manager: PortalManagerRef) => void;
+  removeManager: (id: string) => void;
 }
 
 export interface PortalManagerProps {
   id?: string;
-  auditName?: string;
 }
 
 export interface PortalManagerRef {

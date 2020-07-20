@@ -3,7 +3,7 @@ import { Stage } from 'react-konva';
 import Layer from './portal-layer';
 import Provider from './stage-context';
 import { ForwardedRef, ManagerCommand, PortalManagerRef, PortalStageProps } from './types';
-import { mountCmd, notUnmountByKey, PORTAL_LAYER_ID, unmountCmd, updateCmd, warnIfDev } from './utils';
+import { mountCmd, notUnmountByKey, PORTAL_LAYER_ID, unmountCmd, updateCmd } from './utils';
 
 function StageComponent({ children, portalLayerProps, ...props }: PortalStageProps, ref: ForwardedRef<Stage>) {
   const seqRef = useRef(0);
@@ -20,17 +20,11 @@ function StageComponent({ children, portalLayerProps, ...props }: PortalStagePro
     queueRef.current = {};
   }, []);
 
-  const addManager = useCallback((auditName: string, id: string, manager: PortalManagerRef) => {
-    if (managersRef.current[id]) {
-      warnIfDev(`Found ${auditName} with duplicate id "${id}".`);
-    }
+  const addManager = useCallback((id: string, manager: PortalManagerRef) => {
     managersRef.current[id] = manager;
   }, []);
 
-  const removeManager = useCallback((auditName: string, id: string) => {
-    if (!managersRef.current[id]) {
-      warnIfDev(`You are trying to remove unknown ${auditName} instance with id "${id}".`);
-    }
+  const removeManager = useCallback((id: string) => {
     delete managersRef.current[id];
   }, []);
 

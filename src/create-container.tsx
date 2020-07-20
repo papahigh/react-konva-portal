@@ -18,10 +18,7 @@ export function createPortalContainer<
   KonvaNode extends Konva.Node,
   KonvaProps extends Konva.NodeConfig,
   KonvaComponent extends KonvaNodeComponent<KonvaNode, KonvaProps>
->(
-  Component: KonvaComponent,
-  auditName: string,
-): ForwardRefExoticComponent<PropsWithoutRef<KonvaProps> & RefAttributes<KonvaNode>> {
+>(Component: KonvaComponent): ForwardRefExoticComponent<PropsWithoutRef<KonvaProps> & RefAttributes<KonvaNode>> {
   function PortalContainer(props: PropsWithChildren<KonvaProps>, ref: ForwardedRef<KonvaNode>) {
     const { id, children } = props;
     const konvaRef = useRef<KonvaNode | null>(null);
@@ -33,16 +30,16 @@ export function createPortalContainer<
     useImperativeHandle<KonvaNode | null, KonvaNode | null>(ref, () => konvaRef.current, [konvaRef.current]);
 
     useLayoutEffect(() => {
-      if (id != null && managerRef.current) stage?.addManager(auditName, id!, managerRef.current);
+      if (id != null && managerRef.current) stage?.addManager(id, managerRef.current);
       return () => {
-        if (id != null) stage?.removeManager(auditName, id!);
+        if (id != null) stage?.removeManager(id);
       };
-    }, [id, stage, auditName]);
+    }, [id, stage]);
 
     return (
       <Konva {...props} id={id} ref={konvaRef}>
         {children}
-        <PortalManager id={id} ref={managerRef} auditName={auditName} key={id} />
+        <PortalManager id={id} ref={managerRef} key={id} />
       </Konva>
     );
   }
