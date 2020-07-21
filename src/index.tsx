@@ -1,11 +1,13 @@
-import Konva from 'konva';
-import { Group as GroupComp, Layer as LayerComp } from 'react-konva';
+import { Group as KonvaGroup } from 'konva/types/Group';
+import { Layer as KonvaLayer, LayerConfig } from 'konva/types/Layer';
+import { NodeConfig } from 'konva/types/Node';
+import { Group as ReactKonvaGroup, Layer as LayerComp } from 'react-konva';
 import createPortalContainer from './create-container';
 
 export { default as Portal } from './portal';
 export { default as Stage } from './portal-stage';
 
-export const Group = createPortalContainer<Konva.Group, Konva.NodeConfig, typeof GroupComp>(GroupComp, 'Group');
-export const Layer = createPortalContainer<Konva.Layer, Konva.LayerConfig, typeof LayerComp>(LayerComp, 'Layer');
+export const Group = createPortalContainer<KonvaGroup, NodeConfig, typeof ReactKonvaGroup>(ReactKonvaGroup);
+export const Layer = createPortalContainer<KonvaLayer, LayerConfig, typeof LayerComp>(LayerComp);
 
 export { PORTAL_LAYER_ID, Z_INDEX } from './utils';

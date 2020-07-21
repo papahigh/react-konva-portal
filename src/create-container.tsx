@@ -1,4 +1,4 @@
-import Konva from 'konva';
+import { Node, NodeConfig } from 'konva/types/Node';
 import React, {
   forwardRef,
   ForwardRefExoticComponent,
@@ -15,8 +15,8 @@ import { useStageContext } from './stage-context';
 import { ForwardedRef, PortalManagerRef } from './types';
 
 export function createPortalContainer<
-  KonvaNode extends Konva.Node,
-  KonvaProps extends Konva.NodeConfig,
+  KonvaNode extends Node,
+  KonvaProps extends NodeConfig,
   KonvaComponent extends KonvaNodeComponent<KonvaNode, KonvaProps>
 >(Component: KonvaComponent): ForwardRefExoticComponent<PropsWithoutRef<KonvaProps> & RefAttributes<KonvaNode>> {
   function PortalContainer(props: PropsWithChildren<KonvaProps>, ref: ForwardedRef<KonvaNode>) {
